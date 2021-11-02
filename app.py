@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 
@@ -24,7 +25,7 @@ class Ball:
 
         self.y += self.my
         if self.y < self.r:
-            self.x, self.my = self.r, -self.my
+            self.y, self.my = self.r, -self.my
         if self.y > height-self.r:
             self.y, self.my = height-self.r, -self.my
 
@@ -33,13 +34,18 @@ class Ball:
                            (round(self.x), round(self.y)), self.r, 4)
 
 
-b1 = Ball(200, 200, 50, 2, 0.5)
-b2 = Ball(300, 200, 50, -1, -1.5)
-
+#b1 = Ball(200, 200, 50, 2, 0.5)
+#b2 = Ball(300, 200, 50, -1, -1.5)
 balls = []
+for i in range(20):
+    x = random.randint(0, width)
+    y = random.randint(0, height)
+    r = random.randint(5, 20)
+    mx = random.uniform(0, 4) - 2
+    my = random.uniform(0, 4) - 2
 
-balls.append(b1)
-balls.append(b2)
+    ball = Ball(x, y, r, mx, my)
+    balls.append(ball)
 
 hit_count = 0
 run = True
@@ -51,8 +57,6 @@ while run:
 
     for ball in balls:
         ball.move()
-#    b1.move()
-#    b2.move()
 
     for i in range(len(balls)):
         for j in range(len(balls)):
@@ -60,7 +64,7 @@ while run:
             if i == j:
                 break
 
-            print("i: {},j: {}", str(i), str(j))
+            #print("i: {},j: {}", str(i), str(j))
 
             ball1 = balls[i]
             ball2 = balls[j]
@@ -68,8 +72,15 @@ while run:
             v1 = pygame.math.Vector2(ball1.x, ball1.y)
             v2 = pygame.math.Vector2(ball2.x, ball2.y)
             if v1.distance_to(v2) < ball1.r + ball2.r - 2:
-                hit_count += 1
-                print("hit:", hit_count)
+                ball1.r += 1
+                if ball1.r > 50:
+                    ball1.r = 1
+                ball2.r -= 1
+                if ball2.r < 1:
+                    ball2.r = random.randint(10, 50)
+
+                #hit_count += 1
+                #print("hit:", hit_count)
 
                 nv = v2 - v1
                 m1 = pygame.math.Vector2(ball1.mx, ball1.my).reflect(nv)
