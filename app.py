@@ -36,6 +36,10 @@ class Ball:
 b1 = Ball(200, 200, 50, 2, 0.5)
 b2 = Ball(300, 200, 50, -1, -1.5)
 
+balls = []
+
+balls.append(b1)
+balls.append(b2)
 
 hit_count = 0
 run = True
@@ -45,22 +49,36 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    b1.move()
-    b2.move()
+    for ball in balls:
+        ball.move()
+#    b1.move()
+#    b2.move()
 
-    v1 = pygame.math.Vector2(b1.x, b1.y)
-    v2 = pygame.math.Vector2(b2.x, b2.y)
-    if v1.distance_to(v2) < b1.r + b2.r - 2:
-        hit_count += 1
-        print("hit:", hit_count)
+    for i in range(len(balls)):
+        for j in range(len(balls)):
 
-        nv = v2 - v1
-        m1 = pygame.math.Vector2(b1.mx, b1.my).reflect(nv)
-        m2 = pygame.math.Vector2(b2.mx, b2.my).reflect(nv)
-        b1.mx, b1.my = m1.x, m1.y
-        b2.mx, b2.my = m2.x, m2.y
+            if i == j:
+                break
+
+            print("i: {},j: {}", str(i), str(j))
+
+            ball1 = balls[i]
+            ball2 = balls[j]
+
+            v1 = pygame.math.Vector2(ball1.x, ball1.y)
+            v2 = pygame.math.Vector2(ball2.x, ball2.y)
+            if v1.distance_to(v2) < ball1.r + ball2.r - 2:
+                hit_count += 1
+                print("hit:", hit_count)
+
+                nv = v2 - v1
+                m1 = pygame.math.Vector2(ball1.mx, ball1.my).reflect(nv)
+                m2 = pygame.math.Vector2(ball2.mx, ball2.my).reflect(nv)
+                ball1.mx, ball1.my = m1.x, m1.y
+                ball2.mx, ball2.my = m2.x, m2.y
 
     window.fill((127, 127, 127))
-    b1.draw()
-    b2.draw()
+    for ball in balls:
+        ball.draw()
+
     pygame.display.flip()
